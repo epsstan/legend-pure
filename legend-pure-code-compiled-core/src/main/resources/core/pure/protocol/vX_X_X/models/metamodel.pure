@@ -831,5 +831,9 @@ Class meta::protocols::pure::vX_X_X::metamodel::domain::Function extends meta::p
    returnMultiplicity:meta::protocols::pure::vX_X_X::metamodel::domain::Multiplicity[1];
    parameters : meta::protocols::pure::vX_X_X::metamodel::valueSpecification::Variable[*];
    body : meta::protocols::pure::vX_X_X::metamodel::valueSpecification::ValueSpecification[*];
+}
 
+Class <<typemodifiers.abstract>> meta::protocols::pure::vX_X_X::metamodel::service::ServiceAuthorizer
+{
+   _type: String[1];
 }

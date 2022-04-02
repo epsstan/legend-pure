@@ -17,6 +17,17 @@ import meta::pure::mapping::*;
 import meta::legend::service::metamodel::*;
 import meta::pure::executionPlan::*;
 
+Class meta::legend::service::metamodel::ServiceAuthorizer extends PackageableElement
+{
+
+}
+
+Class meta::legend::service::metamodel::PackageableServiceAuthorizer extends PackageableElement
+{
+
+}
+
+
 Class meta::legend::service::metamodel::Service extends PackageableElement
 [
    multiExecutionKeyMustBePartOfPattern: if($this.execution->instanceOf(meta::legend::service::metamodel::PureMultiExecution),|$this.pattern->contains('{'+ $this.execution->cast(@PureMultiExecution).executionKey+'}'),|true),
@@ -33,6 +44,7 @@ Class meta::legend::service::metamodel::Service extends PackageableElement
 {
    pattern : String[1];
    owners : String[*];
+   authorizer: ServiceAuthorizer[0..1];
    autoActivateUpdates : Boolean[1];
    documentation : String[1];
    execution : Execution[1];
