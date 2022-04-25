@@ -20,6 +20,22 @@ import meta::pure::mapping::*;
 
 import meta::pure::runtime::*;
 
+
+Class meta::legend::service::metamodel::ServiceAuthorizer extends PackageableElement
+{
+
+}
+
+Class meta::legend::service::metamodel::PackageableServiceAuthorizer extends PackageableElement
+{
+
+}
+
+Class meta::legend::service::metamodel::ExternalServiceAuthorizer extends meta::legend::service::metamodel::ServiceAuthorizer
+{
+    authorizationUrl : String[1];
+}
+
 Class meta::legend::service::metamodel::Service extends PackageableElement, meta::pure::test::Testable
 [
    multiExecutionKeyMustBePartOfPattern: if($this.execution->instanceOf(meta::legend::service::metamodel::PureMultiExecution),|$this.pattern->contains('{'+ $this.execution->cast(@PureMultiExecution).executionKey+'}'),|true),
@@ -36,6 +52,7 @@ Class meta::legend::service::metamodel::Service extends PackageableElement, meta
 {
    pattern : String[1];
    owners : String[*];
+   authorizer: ServiceAuthorizer[0..1];
    autoActivateUpdates : Boolean[1];
    documentation : String[1];
    execution : Execution[1];
