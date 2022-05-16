@@ -682,6 +682,9 @@ function meta::pure::router::routing::routePath(state:RoutingState[1], mapping:M
 
 function meta::pure::router::routing::routeFunctionExpression(fe:FunctionExpression[1], state:RoutingState[1], mapping:Mapping[1], runtime:Runtime[1], executionContext:ExecutionContext[1], vars:Map<VariableExpression, ValueSpecification>[1], inScopeVars:Map<String, List<Any>>[1], extensions:meta::pure::router::extension::RouterExtension[*], debug:DebugContext[1]):RoutingState[1]
 {
+
+   println('S6');
+
    $fe.func->match([
                        p:Property<Nil,Any|*>[1]| $p->routeFunctionExpressionProperty($fe, $state, $mapping, $runtime, $executionContext, $vars, $inScopeVars, $extensions, $debug);,
                        f:Function<Any>[1]| $f->routeFunctionExpressionFunctionDefinition($fe, $state, $mapping, $runtime, $executionContext, $vars, $inScopeVars->putAll($f->openVariableValues()), $extensions, $debug);
@@ -803,6 +806,7 @@ function meta::pure::router::routing::routeFunctionExpressionProperty(p:Property
 
 function meta::pure::router::routing::routeFunctionExpressionFunctionDefinition(f:Function<Any>[1], fe:FunctionExpression[1], state:RoutingState[1], mapping:Mapping[1], runtime:Runtime[1], executionContext:ExecutionContext[1], vars:Map<VariableExpression, ValueSpecification>[1], inScopeVars:Map<String, List<Any>>[1], extensions:meta::pure::router::extension::RouterExtension[*], debug:DebugContext[1]):RoutingState[1]
 {
+   println('|---' + $debug.space + '---|');
    print(if($debug.debug,|$debug.space+if($f->instanceOf(NativeFunction),|'NativeFunction',|'FunctionDefinition')+' : '+$f->asString()+'\n',|''));
    
    let res = $extensions.routing_routeFunctionExpressionFunctionDefinition->filter(e|$e.first->eval($fe));
@@ -1072,7 +1076,7 @@ function meta::pure::router::routing::processAggregationFunctionExpression(aggFu
 }
 
 function meta::pure::router::routing::processColumnSpecification(v:ValueSpecification[1], state:RoutingState[1], mapping:Mapping[1], runtime:Runtime[1], executionContext:ExecutionContext[1], vars:Map<VariableExpression, ValueSpecification>[1], inScopeVars:Map<String, List<Any>>[1], extensions:meta::pure::router::extension::RouterExtension[*], debug:DebugContext[1]):RoutingState[1]
-{
+{  
    let i = $v->match([i:InstanceValue[1]| $i,
                       v:VariableExpression[1]|^InstanceValue(genericType=$v.genericType, multiplicity=$v.multiplicity, values=$inScopeVars->get($v.name).values)->evaluateAndDeactivate(),
                       f:FunctionExpression[1]| ^InstanceValue(genericType=$f.genericType, multiplicity=$f.multiplicity, values=$f)->evaluateAndDeactivate()]);
@@ -1204,10 +1208,13 @@ function meta::pure::router::routing::routeSubFunction(state:RoutingState[1], ma
 
 function meta::pure::router::routing::processCollection(state:RoutingState[1], col:Any[*], mapping:Mapping[1], runtime:Runtime[1], executionContext:ExecutionContext[1], vars:Map<VariableExpression, ValueSpecification>[1], inScopeVars:Map<String, List<Any>>[1], shouldProcess:Function<{Any[1]->Boolean[1]}>[1], extensions:meta::pure::router::extension::RouterExtension[*], debug:DebugContext[1]):RoutingState[*]
 {
+  println('S5');
+  let index = 0;
+
    $col->fold(
                {c,a| let last = $a->last()->toOne();
                      $a->add(if($c->instanceOf(ValueSpecification) && $shouldProcess->eval($c),
-                                    |^$last(
+                                    |  ^$last(
                                          value = $c,
                                          depth = $state.depth,
                                          propertyMap = $state.propertyMap

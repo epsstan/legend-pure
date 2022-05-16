@@ -16,6 +16,7 @@ Class meta::pure::tools::DebugContext
 {
    debug : Boolean[1];
    space : String[1];
+   x : String[0..1];
 }
 
 

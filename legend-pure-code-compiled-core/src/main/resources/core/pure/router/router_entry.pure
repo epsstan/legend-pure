@@ -73,6 +73,7 @@ function meta::pure::router::execute<T|y>(f:FunctionDefinition<{->T[y]}>[1], m:M
 
 function meta::pure::router::execute<T|m>(f:FunctionDefinition<{->T[m]}>[1], m:Mapping[1], runtime:Runtime[1], extensions:meta::pure::router::extension::RouterExtension[*], debug:DebugContext[1]):Result<T|m>[1]
 {
+    println('S1');
     ^RoutingQuery<T|m>(fn=$f)->execute($m, $runtime, ^ExecutionContext(), $extensions, $debug);
 }
 

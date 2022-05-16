@@ -269,6 +269,7 @@ function meta::pure::functions::collection::buildConcatenate(v:ValueSpecificatio
 
 function <<access.private>> meta::pure::router::execute<X|n>(rq:RoutingQuery<X|n>[1], m:Mapping[1], runtime:Runtime[1], exeCtx:ExecutionContext[1], extensions:meta::pure::router::extension::RouterExtension[*], debug:DebugContext[1]):Result<X|n>[1]
 { 
+   println('S2');
    let routingStarted = now();
    let routed = $rq.fn->routeFunction($m, $runtime, $exeCtx, $extensions, $debug);
    let routingElapsedTimeInNanoSecond = ($routingStarted->dateDiff(now(),DurationUnit.MILLISECONDS)) * 1000000;
@@ -313,6 +314,7 @@ function meta::pure::router::routeFunction(f:FunctionDefinition<Any>[1], extensi
 
 function meta::pure::router::routeFunction(f:FunctionDefinition<Any>[1], exeCtx: ExecutionContext[1], extensions:meta::pure::router::extension::RouterExtension[*], debug:DebugContext[1]):RoutingResult[1]
 {
+   println('a');
    //validate ::execute(..) not present
    let l = {|[]};
    $f.expressionSequence->evaluateAndDeactivate()->fold({vs, a | let expression = if($vs->isLetFunction(),| $vs->cast(@FunctionExpression).parametersValues->evaluateAndDeactivate()->at(1),| $vs);
@@ -347,16 +349,19 @@ function meta::pure::router::routeFunction(f:FunctionDefinition<Any>[1], exeCtx:
 
 function meta::pure::router::routeFunction(f:FunctionDefinition<Any>[1], mapping:Mapping[1], runtime:Runtime[1], extensions:meta::pure::router::extension::RouterExtension[*], debug:DebugContext[1]):RoutingResult[1]
 {
+     println('b');
    routeFunction($f, $mapping, $runtime, ^ExecutionContext(), $extensions, $debug);
 }
 
 function meta::pure::router::routeFunction(f:FunctionDefinition<Any>[1], mapping:Mapping[1], runtime:Runtime[1], exeCtx: ExecutionContext[1], extensions:meta::pure::router::extension::RouterExtension[*], debug:DebugContext[1]):RoutingResult[1]
 {
-   routeFunction($f, $mapping, $runtime, $exeCtx, [], $extensions, $debug)
+  println('S3');
+   routeFunction($f, $mapping, $runtime, $exeCtx, [], $extensions, $debug);
 }
 
 function meta::pure::router::routeFunction(f:FunctionDefinition<Any>[1], mapping:Mapping[1], runtime:Runtime[1], exeCtx: ExecutionContext[1], inScopeVars:Map<String, List<Any>>[0..1], extensions:meta::pure::router::extension::RouterExtension[*], debug:DebugContext[1]):RoutingResult[1]
 {
+     println('S4');
    let isDeepFetch =  $f->isDeepFetchFunction();
    let expectedFuncParamSize = if($isDeepFetch,| 1,| 0);
    //assertEquals($expectedFuncParamSize, $f->functionType().parameters->size(), 'Error'+$f->functionType().parameters->size()->toString());
@@ -365,6 +370,10 @@ function meta::pure::router::routeFunction(f:FunctionDefinition<Any>[1], mapping
    let openVariables = if($inScopeVars->isNotEmpty(),| assert($fOpenVariables->keys()->intersection($inScopeVars)->isEmpty(),'Routing : unable to determine open variables for FunctionDefinition, suplied inScopeVars and FunctionDefinitionOpenVariables intersect');
                                                        $fOpenVariables->putAll($inScopeVars->toOne()->keyValues());
                                                     ,| $fOpenVariables);
+   
+   //print($f.expressionSequence->evaluateAndDeactivate());
+
+   //print($f);
    
    // Mapping allocation
    print(if($debug.debug,|$debug.space+'Processing Mappings:\n',|''));
