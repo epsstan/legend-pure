@@ -31,9 +31,9 @@ Class meta::legend::service::metamodel::PackageableServiceAuthorizer extends Pac
 
 }
 
-Class meta::legend::service::metamodel::ExternalServiceAuthorizer extends meta::legend::service::metamodel::ServiceAuthorizer
+Class meta::legend::service::metamodel::DemoServiceAuthorizer extends meta::legend::service::metamodel::ServiceAuthorizer
 {
-    authorizationUrl : String[1];
+    authorizedUsers : String[1..*];
 }
 
 Class meta::legend::service::metamodel::Service extends PackageableElement, meta::pure::test::Testable
